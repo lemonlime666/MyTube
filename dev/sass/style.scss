@@ -157,6 +157,15 @@ body::before {
             padding: 5px;
             opacity: .9;
             cursor: pointer;
+            &:hover{
+                svg{
+                    path{
+                        &:nth-of-type(2){
+                            fill:indianred;
+                        }
+                    }
+                }
+            }
 
             svg{
                 fill:#efefef;
@@ -210,28 +219,31 @@ body::before {
     left: 50%;
     transform: translate(-50%, 100%);
     min-height: unset;
-    width: 300px;
+    width: 380px;
     height: 40px;
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-evenly;
     align-items: center;
+    @include l-phone(){
+        width:280px;
+    }
+    
     ul{
-        // border: 1px solid green;
+        // border: 1px solid red;
         position: absolute;
-        width: 180px;
+        width: 100%;
         height: 100%;
         list-style: none;
         display: flex;
         flex-flow: row nowrap;
-        justify-content: flex-start;
+        justify-content: center;
         align-items: center;
-        padding-left: 10px;
-        overflow-x: hidden;
+
         li{
             border: 1px solid $lightGold;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             border-radius: 100%;
             @include font-style(){
                 font-size: 14px;
@@ -241,44 +253,90 @@ body::before {
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
-            margin-right: 20px;
-            cursor: pointer;
+            margin-right: 10px;
             transition: all .3s;
+            cursor: pointer;
             &:last-of-type{
-                margin-right: 0;
+                margin-right: 0 !important;
             }
             &:hover{
-                background-color: $lightGold;
+                background-color: rgba($lightGold, .5);
                 color: $wood;
+            }
+            @include l-phone(){
+                margin-right: 8px;
+                width: 25px;
+                height: 25px;
+            }
+            @include s-phone(){
+                margin-right: 5px;
+                width: 20px;
+                height: 20px;
             }
         }
     }
     button{
         position: absolute;
-        top: 0px;
-        width:40px;
-        height: 40px;
+        top: 50%;
+        width:30px;
+        height: 30px;
         border-radius: 8px;
         border: 0;
         outline: 0;
         background-color: rgba($cofe,.8);
         cursor: pointer;
-
+        transform: translate(0,-50%);
         &:hover{
             background-color: lighten(rgba($cofe,.8),10);
         }
+        @include l-phone(){
+            width: 25px;
+            height: 25px;
+        }
     }
     #left{
-        left: -10px;
+        left: -40px;
+        @include s-phone(){
+            left: -5px;
+        }
     }
     #right{
-        right: -10px;
+        right: -40px;
+        @include s-phone(){
+            right: -5px;
+        }
+    }
+    .activePagi{
+        background-color: $lightGold;
+        color: $wood;
+    }
+}
+
+.favorite{
+    position: relative;
+    width: 95%;
+    height: auto;
+    min-height: 75vh;
+    margin: 40px auto 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    padding: 2rem;
+    grid-gap: 2rem;
+
+    @include s-pad(){
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+@media all and (max-width: 460px) {
+    .favorite {
+        width: 100%;
     }
 }
 
 .view{
     display: none;
 }
+
 .activePage{
     display: grid;
 }
