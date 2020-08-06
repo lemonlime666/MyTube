@@ -274,6 +274,9 @@ main{
                 font-size: 14px;
                 color: rgba($darkGold, .8);
             }
+            @media all and (max-width:360px){
+                display: none;
+            }
         }
     }
 

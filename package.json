@@ -10,7 +10,7 @@
     "js": "gulp gojs",
     "go": "gulp go",
     "php": "gulp gophp",
-    "watch":"gulp watch"
+    "watch": "gulp watch"
   },
   "keywords": [],
   "author": "",

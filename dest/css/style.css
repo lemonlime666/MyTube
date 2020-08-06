@@ -272,8 +272,7 @@ body::before {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  align-items: center;
-  height: 15vh; }
+  align-items: center; }
 
 .header h1 {
   /* border:1px solid rebeccapurple; */

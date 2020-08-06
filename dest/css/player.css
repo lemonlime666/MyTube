@@ -464,6 +464,9 @@ main {
       word-spacing: 3px;
       font-size: 14px;
       color: rgba(198, 178, 110, 0.8); }
+      @media all and (max-width: 360px) {
+        main .controlBar .rateLabel {
+          display: none; } }
   main .infoBox {
     width: 70%;
     height: auto;
