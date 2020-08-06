@@ -1,6 +1,7 @@
 const $id = id => {return document.getElementById(id)};
 const $class = cls => {return document.querySelector(cls)};
 const $classAll = cls => {return document.querySelectorAll(cls)};
+const myKey = 'AIzaSyDK8yUbP3EsR1cJK3wpDB4AI2qNWvqQs-4';
 
 const vid = $class('.vidBox');
 const play = $class('.playBtn');
@@ -11,11 +12,26 @@ const progressBar = $class('.progressBar');
 const progressing = $class('.progressing');
 const forward = $class('.forward');
 const backward = $class('.backward');
+const via = $id('vid_html5_api');
+const volumeLabel = $class('.volumeLabel');
+const rateLabel = $class('.rateLabel');
+
+const title = $class('header h1');
+const info = $class('.infoBox p');
 
 const checkPlay = new Event('playStatus');
 const fullScreen = new Event('fullScreen');
 
 let mousedown = false;
+
+var player = videojs('vid');
+videojs(vid, {html5: {
+    hls: {
+        withCredentials: true
+    }
+}});
+
+
 
 function checkStatus(){
     window.dispatchEvent(checkPlay);
@@ -100,25 +116,55 @@ function gobackward(){
     }
 }
 
+function set(){
+    let name = localStorage.getItem('title');
+    let channel = localStorage.getItem('channel');
+    let description = localStorage.getItem('videoDescription')
+    
+    if(!name || !channel || name == undefined || channel == undefined){
+        title.innerText = '無影片資訊'; 
+    }else{
+        title.innerText = `${name} | ${channel}`;
+    }
+    info.innerText = description;
+    vid['volume'] = 0.2;
+}
 
+function arrange(){
+    let show = this.querySelector('[type="range"]');
+    let display = window.getComputedStyle(show).getPropertyValue('display');
+    if(display == 'none'){
+        show.style.display = 'block';
+    }else{
+        show.style.display = 'none'
+    }
+}
 
-
+function shine(){
+    let svg = this.querySelector('svg path');
+    svg.style.fill = 'rgb(225, 208, 161)';
+    setTimeout(()=>{
+        svg.style.fill = 'rgba(198, 178, 110, .8)';
+    },300);
+}
 
 
 
 window.addEventListener('load',function(){
     window.addEventListener('playStatus', playPause);
     play.addEventListener('click', checkStatus);
+    play.addEventListener('click', shine);
     vid.addEventListener('click', checkStatus);
-    setTimeout(()=>{
-        duration.innerText = formatSecond(vid.duration);
-    },1000)
     controler.forEach((item)=>{
         item.addEventListener('change', goControl);
         item.addEventListener('mousemove', goControl);
     })
     window.addEventListener('fullScreen',screenSize);
     full.addEventListener('click', checkFull);
+    volumeLabel.addEventListener('click', arrange);
+    volumeLabel.addEventListener('click', shine);
+    rateLabel.addEventListener('click', arrange);
+    rateLabel.addEventListener('click', shine);
 
 
     vid.addEventListener('timeupdate', handleProgress);
@@ -127,7 +173,24 @@ window.addEventListener('load',function(){
     progressBar.addEventListener('mouseup', clickProgressBar);
 
     forward.addEventListener('click', goforward);
+    forward.addEventListener('click', shine);
     backward.addEventListener('click', gobackward);
-
-    // console.log();
+    backward.addEventListener('click', shine);
+    
+    set();
+    setTimeout(()=>{
+        if(vid.duration){
+            duration.innerText = formatSecond(vid.duration);
+        }
+    }, 1000)
+    setTimeout(()=>{
+        if(vid.duration){
+            duration.innerText = formatSecond(vid.duration);
+        }
+    }, 2000)
+    setTimeout(()=>{
+        if(vid.duration){
+            duration.innerText = formatSecond(vid.duration);
+        }
+    }, 3000)
 })

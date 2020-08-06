@@ -1,7 +1,7 @@
 const $id = id => {return document.getElementById(id)};
 const $class = cls => {return document.querySelector(cls)};
 const $classAll = cls => {return document.querySelectorAll(cls)};
-const myKey = 'AIzaSyDK8yUbP3EsR1cJK3wpDB4AI2qNWvqQs-4';
+const myKey = 'AIzaSyBiUMGZ4j-JrZLtQEoYwB-eaQFWvQwyRCQ';
 const data = [];
 const nextPageToken = Object;
 Object.defineProperty(nextPageToken, 'next', {
@@ -124,7 +124,6 @@ function fetchData(token){
             .then((res) => res.json())
             .then((json)=>{
                 nextPageToken.next = json.nextPageToken;
-                console.log(json);
                 json.items.forEach(item=>{
                     data.push(item);
                 })
@@ -164,7 +163,6 @@ function createPagination(){
 
 //產生content
 function createContent(data){
-    console.log(data);
     let hash = location.hash.replace('#', '');
     let div = $classAll(`.${hash} div`);
     div.forEach((item,index)=>{
@@ -174,7 +172,11 @@ function createContent(data){
         img.setAttribute('src', data[index].snippet.thumbnails.high.url);
         let block = document.createElement('a');
         block.setAttribute('data-id', data[index].id);
+        block.setAttribute('data-description', data[index].snippet.description);
+        block.setAttribute('data-title', data[index].snippet.title);
+        block.setAttribute('data-channel', data[index].snippet.channelTitle);
         block.innerText = '播放';
+        block.addEventListener('click',playVid);
         let addFav = document.createElement('button');
         addFav.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
         imgBox.appendChild(img);
@@ -215,7 +217,6 @@ async function multiTokenFirst(){
     let jsn = await res.json();
     let tok = jsn.nextPageToken;
     tik.push(tok);
-    console.log('phase1');
     multiTokenThen();
 }
 var reGet = 0;
@@ -230,12 +231,10 @@ async function multiTokenThen(){
         let tok = jsn.nextPageToken;
         tik.push(tok);
         multiTokenThen();
-        console.log('phase2');
     }
 }
 
 async function multiTokenLast(){
-    console.log('phase3');
     let options = {method: "GET",};
     let res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&chart=mostPopular&maxResults=4&key=${myKey}&pageToken=${tik[tik.length-1]}`,options);
     let jsn = await res.json();
@@ -372,11 +371,8 @@ function mountFav(e){
             url+= `${e.detail.id}${userFav[i].id}`;
         }
         url+=e.detail.key;
-        console.log(userFav.length - firstFavInit.num)
-        console.log(userFav.length)
 
         let options = {method: "GET",};
-        console.log(url)
         try {
             fetch(`${url}`,options)
                 .then(res=> res.json())
@@ -392,7 +388,6 @@ function mountFav(e){
 }
 
 function createFavDiv(){
-    console.log(inFavCart);
     if(inFavCart.length>0){
         inFavCart.forEach((item)=>{
             let div = document.createElement('div');
@@ -412,7 +407,11 @@ function createFavContent(data){
         img.setAttribute('src', data[index].snippet.thumbnails.high.url);
         let block = document.createElement('a');
         block.setAttribute('data-id', data[index].id);
+        block.setAttribute('data-description', data[index].snippet.description);
+        block.setAttribute('data-title', data[index].snippet.title);
+        block.setAttribute('data-channel', data[index].snippet.channelTitle);
         block.innerText = '播放';
+        block.addEventListener('click', playVid);
         let addFav = document.createElement('button');
         addFav.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
         imgBox.appendChild(img);
@@ -454,7 +453,6 @@ function createFavContent(data){
 function creatPagy(){
     if($classAll('.pagyLayer li') || $classAll('.pagyLayer li').length>0){$classAll('.pagyLayer li').forEach((item)=>{item.remove()})};
     let howManyPage = Math.ceil(userFav.length/12);
-    console.log(howManyPage);
     for(i=0;i<howManyPage;i++){
         let pg = document.createElement('li');
         pg.innerText = i+1;
@@ -476,6 +474,16 @@ function pagyAddEv(pg){
         window.dispatchEvent(favCheck);
         document.documentElement.scrollTop=0;
     })
+}
+
+function playVid(){
+    if(this.dataset.id){
+        localStorage.setItem('playVideo', this.dataset.id);
+        localStorage.setItem('title', this.dataset.title);
+        localStorage.setItem('channel', this.dataset.channel);
+        localStorage.setItem('videoDescription', this.dataset.description);
+        location.href = './player.html';
+    }
 }
 
 

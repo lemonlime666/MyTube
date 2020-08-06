@@ -3,53 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
     <link rel="stylesheet" href="css/player.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.9.2/video.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.15.0/videojs-contrib-hls.min.js"></script>
     <title>MyTube / Video</title>
 </head>
 <body>
     <header>
-        <h1>header</h1>
+        <h1></h1>
     </header>
     <main>
-        <video class="vidBox">
-            <source src="./movies/FilmoraGo Tutorial.MP4">
-            <div clas="aaa"></div>
+        <video class="vidBox" id='vid'>
+            <source src="https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8" type="application/x-mpegURL">
         </video>
-
         <div class="playBar">
             <div class="progressBar">
                 <div class="progressing"></div>
             </div>
         </div>
-
         <div class="controlBar">
             <span class='playBtn'>
                 <svg class="playSvg" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 13.5v-7c0-.41.47-.65.8-.4l4.67 3.5c.27.2.27.6 0 .8l-4.67 3.5c-.33.25-.8.01-.8-.4z"></path></svg>
-                <svg class="pauseSvg" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14c-.55 0-1-.45-1-1V9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1zm4 0c-.55 0-1-.45-1-1V9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1z"></path></svg>
+                <svg class="pauseSvg" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 19c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2s-2 .9-2 2v10c0 1.1.9 2 2 2zm6-12v10c0 1.1.9 2 2 2s2-.9 2-2V7c0-1.1-.9-2-2-2s-2 .9-2 2z"></path></svg>
             </span>
+            <button class="backward">
+                <svg class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.58 16.89l5.77-4.07c.56-.4.56-1.24 0-1.63L5.58 7.11C4.91 6.65 4 7.12 4 7.93v8.14c0 .81.91 1.28 1.58.82zM13 7.93v8.14c0 .81.91 1.28 1.58.82l5.77-4.07c.56-.4.56-1.24 0-1.63l-5.77-4.07c-.67-.47-1.58 0-1.58.81z"></path></svg>
+            </button>
             <span class="initDuration">0:00/</span>
-            <span class="duration"></span>
+            <span class="duration">0:00</span>
+            <button class="forward">
+                <svg class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.58 16.89l5.77-4.07c.56-.4.56-1.24 0-1.63L5.58 7.11C4.91 6.65 4 7.12 4 7.93v8.14c0 .81.91 1.28 1.58.82zM13 7.93v8.14c0 .81.91 1.28 1.58.82l5.77-4.07c.56-.4.56-1.24 0-1.63l-5.77-4.07c-.67-.47-1.58 0-1.58.81z"></path></svg>
+            </button>
             <label for="volume" class="volumeLabel">
                 <svg class="MuiSvgIcon-root jss80" focusable="false" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M3 10v4c0 .55.45 1 1 1h3l3.29 3.29c.63.63 1.71.18 1.71-.71V6.41c0-.89-1.08-1.34-1.71-.71L7 9H4c-.55 0-1 .45-1 1zm13.5 2c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 4.45v.2c0 .38.25.71.6.85C17.18 6.53 19 9.06 19 12s-1.82 5.47-4.4 6.5c-.36.14-.6.47-.6.85v.2c0 .63.63 1.07 1.21.85C18.6 19.11 21 15.84 21 12s-2.4-7.11-5.79-8.4c-.58-.23-1.21.22-1.21.85z"></path>
                 </svg>
-                <input type="range" name="volume" class="volumeSlider" min="0" max="1" step="0.05" value="0.1">
+                <input type="range" name="volume" class="volumeSlider" min="0" max="1" step="0.05" value="0.2">
             </label>
-            <label for="playbackRate" class="rateLabel">播放速度
+            <label for="playbackRate" class="rateLabel">
+                <svg class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.38 8.57l-1.23 1.85a8 8 0 01-.22 7.58H5.07A8 8 0 0115.58 6.85l1.85-1.23A10 10 0 003.35 19a2 2 0 001.72 1h13.85a2 2 0 001.74-1 10 10 0 00-.27-10.44zm-9.79 6.84a2 2 0 002.83 0l5.66-8.49-8.49 5.66a2 2 0 000 2.83z"></path></svg>
                 <input type="range" name="playbackRate" class="rateSlider" min="0.5" max="2" step="0.1" value="1">
             </label>
-            <button class="backward">
-                <svg class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.58 16.89l5.77-4.07c.56-.4.56-1.24 0-1.63L5.58 7.11C4.91 6.65 4 7.12 4 7.93v8.14c0 .81.91 1.28 1.58.82zM13 7.93v8.14c0 .81.91 1.28 1.58.82l5.77-4.07c.56-.4.56-1.24 0-1.63l-5.77-4.07c-.67-.47-1.58 0-1.58.81z"></path></svg>
-            </button>
-            <button class="forward">
-                <svg class="MuiSvgIcon-root jss79" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.58 16.89l5.77-4.07c.56-.4.56-1.24 0-1.63L5.58 7.11C4.91 6.65 4 7.12 4 7.93v8.14c0 .81.91 1.28 1.58.82zM13 7.93v8.14c0 .81.91 1.28 1.58.82l5.77-4.07c.56-.4.56-1.24 0-1.63l-5.77-4.07c-.67-.47-1.58 0-1.58.81z"></path></svg>
-            </button>
             <button class="full">
                 <svg class="fullSvg" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1h3c.55 0 1-.45 1-1s-.45-1-1-1H7v-2c0-.55-.45-1-1-1zm0-4c.55 0 1-.45 1-1V7h2c.55 0 1-.45 1-1s-.45-1-1-1H6c-.55 0-1 .45-1 1v3c0 .55.45 1 1 1zm11 7h-2c-.55 0-1 .45-1 1s.45 1 1 1h3c.55 0 1-.45 1-1v-3c0-.55-.45-1-1-1s-1 .45-1 1v2zM14 6c0 .55.45 1 1 1h2v2c0 .55.45 1 1 1s1-.45 1-1V6c0-.55-.45-1-1-1h-3c-.55 0-1 .45-1 1z"></path></svg>
             </button>
         </div>
         <div class="infoBox">
-            <h1>Put the info here</h1>
+            <p>Put the info here</p>
         </div>
     </main>
     <script src="./js/player.js"></script>
