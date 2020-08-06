@@ -79,7 +79,7 @@ body::before {
     }
 }
 
-.home {
+.home,.favorite {
     // border: 1px solid red;
     position: relative;
     width: 95%;
@@ -101,7 +101,7 @@ body::before {
     }
 }
 
-.home div {
+.home div,.favorite div {
     // border: 1px solid red;
     height: 280px;
     display: flex;
@@ -212,7 +212,7 @@ body::before {
     }
 }
 
-.home .pagination {
+.home .pagination ,.favorite .pagy{
     // border: 1px solid green;
     position: absolute;
     bottom: 0;
@@ -294,37 +294,43 @@ body::before {
             height: 25px;
         }
     }
-    #left{
+    #left,#favLeft{
         left: -40px;
         @include s-phone(){
             left: -5px;
         }
     }
-    #right{
+    #right,#favRight{
         right: -40px;
         @include s-phone(){
             right: -5px;
         }
     }
-    .activePagi{
+    .activePagi,.activePagy{
         background-color: $lightGold;
         color: $wood;
     }
 }
 
 .favorite{
-    position: relative;
-    width: 95%;
-    height: auto;
-    min-height: 75vh;
-    margin: 40px auto 60px;
-    display: grid;
+    // border: 1px solid green;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    padding: 2rem;
-    grid-gap: 2rem;
 
     @include s-pad(){
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .pagy{
+        width: auto;
+        .pagyLayer{
+            width: auto;
+            position: relative;
+        }
+    }
+
+    .alert{
+        @include font-style(){
+            font-size: unset;
+        }
     }
 }
 @media all and (max-width: 460px) {

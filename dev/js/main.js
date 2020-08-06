@@ -1,7 +1,7 @@
 const $id = id => {return document.getElementById(id)};
 const $class = cls => {return document.querySelector(cls)};
 const $classAll = cls => {return document.querySelectorAll(cls)};
-const myKey = 'AIzaSyBTULL9GjK0xgTLQcPJCMU5l2Xh4ktBCWc';
+const myKey = 'AIzaSyDK8yUbP3EsR1cJK3wpDB4AI2qNWvqQs-4';
 const data = [];
 const nextPageToken = Object;
 Object.defineProperty(nextPageToken, 'next', {
@@ -13,8 +13,8 @@ Object.defineProperty(nextPageToken, 'next', {
     }
 })
 var getResult = 12;
-const userFav = JSON.parse(localStorage.getItem('favVid')) || [];
 
+const userFav = JSON.parse(localStorage.getItem('favVid')) || [];
 const favCheck = new CustomEvent('favCheck',{
     detail:{
         id:`&id=`,
@@ -22,6 +22,9 @@ const favCheck = new CustomEvent('favCheck',{
         url:`https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails`
     }
 }) 
+const pagyHandler = {check:0};
+
+//============================================================================================//
 
 //初始化icon顏色
 function iconFill(){
@@ -62,7 +65,23 @@ function switchHash(){
     let currentPage = $class('.view.activePage').dataset.target;
     history.pushState({},currentPage,`#${currentPage}`);
     document.title = `MyTube / ${currentPage}`;
-    
+    if($class('.alert')){
+        $class('.alert').remove();
+    }
+    if(currentPage == 'favorite'){
+        window.dispatchEvent(favCheck);
+        pagyHandler.check = 0;
+    }
+    if(currentPage == 'home'){
+        pagyHandler.check = 1;
+        $classAll('.imgBox button').forEach(item=>{
+            item.style.backgroundColor = '#383838';
+        });
+        $classAll('.imgBox button svg path:nth-child(2)').forEach(item=>{
+            item.style.fill = '#efefef';
+        });
+        initFavIcon();
+    }
 }
 
 //上下頁更換hash
@@ -71,12 +90,29 @@ function poppin(){
     $class('.activePage').classList.remove('activePage');
     $class(`.${hash}`).classList.add('activePage');
     document.title = `MyTube / ${hash}`;
+    if($class('.alert')){
+        $class('.alert').remove();
+    }
+    if(hash == 'favorite'){
+        window.dispatchEvent(favCheck);
+        pagyHandler.check = 0;
+    }
+    if(hash == 'home'){
+        pagyHandler.check = 1;
+        $classAll('.imgBox button').forEach(item=>{
+            item.style.backgroundColor = '#383838';
+        });
+        $classAll('.imgBox button svg path:nth-child(2)').forEach(item=>{
+            item.style.fill = '#efefef';
+        });
+        initFavIcon();
+    }
+    
 }
 
 //抓取資料
 function fetchData(token){
     data.splice(0,data.length);
-    console.log(data);
     if(token == '' || token == undefined){
         var pageToken = '';
     }else{
@@ -129,12 +165,13 @@ function createPagination(){
 //產生content
 function createContent(data){
     console.log(data);
-    let div = $classAll('.home div');
+    let hash = location.hash.replace('#', '');
+    let div = $classAll(`.${hash} div`);
     div.forEach((item,index)=>{
         let imgBox = document.createElement('div');
         imgBox.classList.add('imgBox');
         let img = document.createElement('img');
-        img.setAttribute('src', data[index].snippet.thumbnails.standard.url);
+        img.setAttribute('src', data[index].snippet.thumbnails.high.url);
         let block = document.createElement('a');
         block.setAttribute('data-id', data[index].id);
         block.innerText = '播放';
@@ -313,6 +350,138 @@ function initFavIcon(){
         }
     }
 }
+//============================================================================================//
+
+const firstFavInit = {num:0};
+const inFavCart = []
+
+function mountFav(e){
+    if(userFav.length!=0){
+        if($classAll('.favorite div').length>0 || $classAll('.favorite div')){$classAll('.favorite div').forEach((item)=>{item.remove()})};
+        inFavCart.splice(0,inFavCart.length);
+        let url = e.detail.url;
+        let limit;
+        if(userFav.length<=12){
+            limit = userFav.length;
+        }else if((userFav.length - firstFavInit.num) >= 12 && userFav.length > 12){
+            limit = firstFavInit.num + 12;
+        }else if((userFav.length - firstFavInit.num) < 12 && userFav.length > 12){
+            limit = (userFav.length - firstFavInit.num ) + firstFavInit.num;
+        }
+        for(i=firstFavInit.num;i<limit;i++){
+            url+= `${e.detail.id}${userFav[i].id}`;
+        }
+        url+=e.detail.key;
+        console.log(userFav.length - firstFavInit.num)
+        console.log(userFav.length)
+
+        let options = {method: "GET",};
+        console.log(url)
+        try {
+            fetch(`${url}`,options)
+                .then(res=> res.json())
+                .then(json=>json.items.forEach(item=>{inFavCart.push(item);}))
+                .then(()=>{createFavDiv();})
+        } catch (e) {
+            console.log("ERROR", e);
+        }
+    }else{
+        if($classAll('.favorite div').length>0 || $classAll('.favorite div')){$classAll('.favorite div').forEach((item)=>{item.remove()})};
+        if($classAll('.pagyLayer li').length>0 || $classAll('.pagyLayer li')){$classAll('.pagyLayer li').forEach((item)=>{item.remove()})};
+    }
+}
+
+function createFavDiv(){
+    console.log(inFavCart);
+    if(inFavCart.length>0){
+        inFavCart.forEach((item)=>{
+            let div = document.createElement('div');
+            $class('.favorite').insertBefore(div,$class('.pagy'));
+        })
+        createFavContent(inFavCart);
+    }
+}
+
+function createFavContent(data){
+    let hash = location.hash.replace('#', '');
+    let div = $classAll(`.${hash} div`);
+    div.forEach((item,index)=>{
+        let imgBox = document.createElement('div');
+        imgBox.classList.add('imgBox');
+        let img = document.createElement('img');
+        img.setAttribute('src', data[index].snippet.thumbnails.high.url);
+        let block = document.createElement('a');
+        block.setAttribute('data-id', data[index].id);
+        block.innerText = '播放';
+        let addFav = document.createElement('button');
+        addFav.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+        imgBox.appendChild(img);
+        imgBox.appendChild(block);
+        imgBox.appendChild(addFav);
+
+        let infoBox = document.createElement('div');
+        infoBox.classList.add('infoBox');
+        let infoLayer = document.createElement('div');
+        let h5 = document.createElement('h5');
+        h5.innerText = data[index].snippet.localized.title;
+        let channel = document.createElement('p');
+        channel.innerText = data[index].snippet.channelTitle;
+        let vidLen = document.createElement('p');
+        let len =  data[index].contentDetails.duration.replace('PT','');
+        let len2 = len.replace('M','分');
+        let len3 = len2.replace('S','秒');
+        vidLen.innerText = len3;
+
+        infoBox.appendChild(h5);
+        infoLayer.appendChild(channel);
+        infoLayer.appendChild(vidLen);
+        infoBox.appendChild(infoLayer);
+        item.appendChild(imgBox);
+        item.appendChild(infoBox);
+    })
+    $classAll('.imgBox button').forEach(item=>{
+        item.addEventListener('click', clickFav);
+    })
+    $classAll('.favorite div .imgBox button').forEach(item=>{
+        item.addEventListener('click', function(){
+            this.offsetParent.parentNode.remove();
+            creatPagy();
+        });
+    })
+    initFavIcon();
+}
+
+function creatPagy(){
+    if($classAll('.pagyLayer li') || $classAll('.pagyLayer li').length>0){$classAll('.pagyLayer li').forEach((item)=>{item.remove()})};
+    let howManyPage = Math.ceil(userFav.length/12);
+    console.log(howManyPage);
+    for(i=0;i<howManyPage;i++){
+        let pg = document.createElement('li');
+        pg.innerText = i+1;
+        pg.dataset.favPagy = i*12;
+        if(i==0){
+            pg.classList.add('activePagy');
+        }
+        $class('.pagyLayer').appendChild(pg);
+        pagyAddEv(pg);
+    }
+    pagyHandler.check = 1;
+}
+
+function pagyAddEv(pg){
+    pg.addEventListener('click', function(e){
+        firstFavInit.num = parseInt(e.target.dataset.favPagy);
+        $class('.activePagy').classList.remove('activePagy');
+        e.target.classList.add('activePagy');
+        window.dispatchEvent(favCheck);
+        document.documentElement.scrollTop=0;
+    })
+}
+
+
+
+
+
 
 
 
@@ -329,12 +498,16 @@ window.addEventListener('load', function(){
     multiTokenFirst();
     $id('left').addEventListener('click',pagiMove);
     $id('right').addEventListener('click',pagiMove);
+    window.addEventListener('favCheck', async (e)=>{
+        await mountFav(e);
+        if(pagyHandler.check == 0){
+            await creatPagy();
+        }
+    });
 })
 
 window.addEventListener('popstate',function(){
     poppin();
 })
-
-
 
 

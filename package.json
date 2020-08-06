@@ -9,7 +9,8 @@
     "img": "gulp goimg",
     "js": "gulp gojs",
     "go": "gulp go",
-    "php": "gulp gophp"
+    "php": "gulp gophp",
+    "watch":"gulp watch"
   },
   "keywords": [],
   "author": "",
